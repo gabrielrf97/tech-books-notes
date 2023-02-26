@@ -162,9 +162,63 @@ Se todos os componentes de um sistema tivessem estabilidade máxima, o sistema s
 [**] Os componentes mutáveis estão no topo e dependem do componente estável abaixo. Colocar os componentes instáveis no topo do diagrama é uma convenção útil porque qualquer flecha que aponte para cima estará violando o SDP (e, como veremos mais adiante, o ADP).
 
 #### O Princípio das Abstrações Estáveis.(SAP)
+> Um componente deve ser tão abstrato quanto estável. 
+
+[*] Algum software no sistema não deve mudar com muita frequência. Esse software representa a arquitetura de alto nível e as decisões sobre políticas. Não queremos que essas decisões arquiteturais e de negócios sejam voláteis. Assim, o software que engloba as políticas de alto nível do sistema deve ser colocado em componentes estáveis (I = 0). Os componentes instáveis (I = 1) devem conter apenas software volátil — software que podemos mudar com rapidez e facilidade.
+  
+[**] Contudo, se as políticas de alto nível forem colocadas em componentes estáveis, o código-fonte que representa essas políticas será difícil de mudar. Isso pode tornar inflexível a arquitetura geral. Como um componente com estabilidade máxima (I = 0) pode ser flexível o bastante para resistir à mudança? A resposta está no OCP. Esse princípio nos diz que é possível e desejável criar classes flexíveis o bastante para serem estendidas sem que haja modificações. Que tipo de classe está de acordo com esse princípio? As classes abstratas.
+
+##### Apresentando o Princípio de Abstrações Estáveis
+
+[*] O Princípio de Abstrações Estáveis (SAP — Stable Abstractions Principles) estabelece uma relação entre estabilidade e abstração. Por um lado, ele diz que um componente estável deve também ser abstrato para que essa estabilidade não impeça a sua extensão. Por outro lado, ele afirma que um componente instável deve ser concreto, já que a sua instabilidade permite que o código concreto dentro dele seja facilmente modificado.
+
+Assim, para que um componente seja estável, ele deve consistir de interfaces e classes abstratas de modo que possa ser estendido. Os componentes estáveis extensíveis são flexíveis e não restringem demais a arquitetura.
+
+[**] Os princípios SAP e SDP, quando combinados, formam o DIP aplicável aos componentes. Isso porque o SDP indica as dependências que devem apontar na direção da estabilidade e o SAP determina que a estabilidade implica em abstração. Logo, as dependências devem apontar na direção da abstração.
+
+[!] O DIP, no entanto, é um princípio que lida com classes — e com classes de definição precisa. Uma classe é abstrata ou não. A combinação entre o SDP e o SAP se aplica aos componentes e permite que um componente seja parcialmente abstrato e parcialmente estável.
+
+#### Medindo a abstração
+
+[**] A métrica A é uma medida do nível de abstração de um componente. Seu valor corresponde à razão entre as interfaces e classes abstratas de um componente e o número total de classes desse mesmo componente.
+			
+    Nc: número de classes de um componente.
+    Na: número de classes abstratas e interfaces do componente.
+    A: nível de abstração. A = Na , Nc.
+
+A métrica A varia de 0 a 1. O valor 0 indica que o componente não tem nenhuma classe abstrata. Já o valor 1 implica que o componente só contém classes abstratas.
+
+Já que não podemos impor uma regra para que todos os componentes fiquem em (0, 1) ou (1, 0), devemos supor que há um locus de pontos no gráfico A/I que define as posições razoáveis dos componentes. Podemos deduzir esse locus pela determinação das áreas em que os componentes não devem estar — ou seja, indicando a zona de exclusão.
+
+##### A Zona da Dor
+
+[**] Esse componente é altamente estável, concreto e, por ser rígido, indesejável. Não pode ser estendido porque não é abstrato e é muito difícil de mudar por causa da sua estabilidade. Assim, não esperamos normalmente observar componentes bem projetados próximos de (0, 0). A área em torno de (0, 0) é uma zona de exclusão chamada Zona da Dor.
+
+[*] Os componentes não voláteis são inofensivos na zona (0, 0) já que não têm probabilidade de serem mudados. Por isso, apenas os componentes de software voláteis são problemáticos na Zona da Dor. Na Zona da Dor, quanto mais volátil, mais "doloroso" é um componente. De fato, podemos considerar a volatilidade como o terceiro eixo do gráfico.
+
+##### A Zona da Inutilidade
+
+[**] Considere um componente próximo de (1, 1). Essa posição é indesejável porque indica abstração máxima sem dependentes. Componentes como esses são inúteis. Logo, essa área é chamada de Zona da Inutilidade.
+
+##### Evitando as Zonas de Exclusão
+
+Na Sequência Principal, um componente não é nem "abstrato demais" para a sua estabilidade nem "instável demais" para a sua abstração. Não é inútil nem particularmente doloroso. É alvo de dependências proporcionalmente à sua abstração e depende de outros na medida em que é concreto.
+
+##### Distância da Sequência Principal
+
+[**] Isso nos leva à última métrica. Se é desejável que os componentes estejam na Sequência Principal ou próximos dela, podemos então criar uma métrica que determine a distância entre a posição atual do componente e o seu local ideal.
+	
+    D3: distância. D = |A+I-1| . A variação dessa métrica é [0, 1]. O valor 0 indica que o componente está diretamente na Sequência Principal. O valor 1 indica que o componente está o mais distante possível da Sequência Principal.
+
+[*] Também é possível realizar a análise estatística de um design. Podemos calcular a média e a variação de todas as métricas D dos componentes de um design. Em regra, esperamos que um bom design tenha uma média e uma variação próximas de zero. A variação pode ser usada para estabelecer "limites de controle" com o objetivo de identificar componentes que sejam "excepcionais" em comparação com os demais. Por alguma razão, eles ou são muito abstratos e têm poucos dependentes ou são muito concretos e têm muitos dependentes.
+
+[*] Outra maneira de usar as métricas é plotar a métrica D de cada componente em função do tempo, e examinar pontos fora do desvio padrão.
+
+##### Conclusão
+
+[**] As métricas de gestão de dependências descritas neste capítulo determinam a conformidade de um design em relação a um padrão de dependência e abstração que eu considero "bom". A experiência mostra que há dependências boas e ruins. Esse padrão reflete a experiência. Contudo, uma métrica não é um deus; ela é apenas uma medida contra um padrão arbitrário. Essas métricas são, no máximo, imperfeitas, mas é minha esperança que você as ache úteis.
 
 ## References
-
 
 ## Symbols
 [***] - Very, very special thought. Should exist very few of these.

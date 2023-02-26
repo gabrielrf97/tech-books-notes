@@ -1,0 +1,1 @@
+https://www.reddit.com/r/books/comments/ch0wt/a_reading_list_for_the_selftaught_computer/
